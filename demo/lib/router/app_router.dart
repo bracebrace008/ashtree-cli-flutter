@@ -1,4 +1,6 @@
 // import your pages here
+import 'package:breass/pages/my_example/my_example_page.dart';
+import 'package:breass/pages/my_example/my_example_page.dart';
 import 'package:breass/pages/home/home_page.dart';
 import 'package:breass/pages/main/main_page.dart';
 import 'package:breass/pages/mine/mine_page.dart';
@@ -37,5 +39,15 @@ final appRouter = GoRouter(
       routes: shellRoutes,
     ),
     // insert your route here
+    GoRoute(
+      path: myExamplePath,
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) => const MyExamplePage(),
+    ),
+    GoRoute(
+      path: myExamplePath,
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) => const MyExamplePage(),
+    ),
   ],
 );

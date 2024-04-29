@@ -15,19 +15,19 @@ class {{name.pascalCase()}}Page extends StatelessWidget {
 {{/stateless}}
 
 {{#stateful}}
-class {{pascalCase name}}Page extends StatefulWidget {
-  const {{pascalCase name}}Page({ Key? key }) : super(key: key);
+class {{name.pascalCase()}}Page extends StatefulWidget {
+  const {{name.pascalCase()}}Page({ Key? key }) : super(key: key);
 
   @override
-  State createState() => _{{pascalCase name}}PageState();
+  State createState() => _{{name.pascalCase()}}PageState();
 }
 
-class _{{pascalCase name}}PageState extends State<{{pascalCase name}}Page> {
+class _{{name.pascalCase()}}PageState extends State<{{name.pascalCase()}}Page> {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('{{pascalCase name}}'),
-    ).myScaffoldWrapper(title: '{{pascalCase name}}');
+      child: Text('{{name.pascalCase()}}'),
+    ).myScaffoldWrapper(title: '{{name.pascalCase()}}');
   }
 }
 {{/stateful}}
