@@ -16,13 +16,12 @@ class CreateCommand extends Command {
 
   @override
   void run() {
-    print('${argResults!.rest}');
-    var projectName = argResults?.rest[0];
-
-    if (projectName == null || projectName.isEmpty) {
+    if (argResults?.rest.length == 0) {
       print('请输入项目名！');
       return;
     }
+    var projectName = argResults!.rest[0];
+
     if (!isSnakeCase(projectName)) {
       print('项目名不符合规则！');
       return;
