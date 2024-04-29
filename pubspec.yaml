@@ -10,6 +10,9 @@ environment:
 
 dependencies:
   args: ^2.5.0
+  flutter:
+    sdk: flutter
+  mason: ^0.1.0-dev.53
 
 executables:
   ashtree_cli: main
