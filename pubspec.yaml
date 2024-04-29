@@ -1,4 +1,9 @@
 name: "ashtree_cli"
+description: "A command-line tool for help user build flutter project quickly."
+
+version: 1.0.0
+
+repository: https://github.com/bracebrace008/ashtree-cli-flutter
 
 environment:
   sdk: ">=3.3.3 <4.0.0"
