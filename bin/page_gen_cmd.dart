@@ -41,7 +41,6 @@ class PageGenCommand extends Command {
       'stateful': pageType == 'stateful',
     };
 
-    await Future.delayed(Duration(seconds: 2));
     await generator.generate(target, vars: vars);
     progress.complete('dsfasfaf');
   }
