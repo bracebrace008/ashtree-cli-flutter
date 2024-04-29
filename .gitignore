@@ -46,3 +46,5 @@ app.*.map.json
 
 # js tool
 node_modules/
+
+demo/
