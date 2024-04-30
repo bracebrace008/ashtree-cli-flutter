@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:xml/xml.dart';
 
 import 'utils.dart';
 import 'package:path/path.dart' as path;
@@ -20,6 +21,31 @@ class CreateCommand extends Command {
     level: Level.verbose,
     theme: LogTheme(),
   );
+
+  addEasyLocalizatioConfig(String projectName) async {
+    const plistPath = '/ios/Runner/Info.plist';
+    final file = File(projectName + plistPath);
+    final document = XmlDocument.parse(await file.readAsString());
+    final dict = document.findAllElements('dict').first;
+    final builder = XmlBuilder();
+    builder.element('key', nest: () {
+      builder.text('CFBundleLocalizations');
+    });
+    builder.element('array', nest: () {
+      builder.element('string', nest: () {
+        builder.text('en');
+      });
+      builder.element('string', nest: () {
+        builder.text('zh');
+      });
+    });
+    dict.children.add(builder.buildFragment());
+
+    // 将修改后的 XML 文档写回文件
+    await file.writeAsString(document.toXmlString(pretty: true, indent: '\t'));
+
+    print('CFBundleLocalizations added successfully.');
+  }
 
   @override
   void run() async {
@@ -51,6 +77,11 @@ class CreateCommand extends Command {
     };
 
     await generator.generate(target, vars: vars);
+    await Process.run('flutter', ['create', '.'],
+        workingDirectory: projectName);
+
+    await addEasyLocalizatioConfig(projectName);
+
     progress.complete('project generated successfully!');
     print('项目创建完成！');
   }
