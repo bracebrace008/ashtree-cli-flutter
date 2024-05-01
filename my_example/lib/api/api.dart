@@ -1,35 +1,38 @@
-import 'package:my_example/models/page_data/page_data.dart';
 import 'package:my_example/utils/http/http_request.dart';
+import 'package:my_example/models/page_data/page_data.dart';
 
 Future<PageData<Word>> wordPageListApi({
   int? current,
   int? size,
   String? wordBookKey,
 }) async {
-  return await HttpRequest().post(
+  final res = await HttpRequest().post(
     '/client/word/pageList',
     data: {'current': current, 'size': size, 'wordBookKey': wordBookKey},
   );
+  return PageData.fromJson(res.data, (v) => Word.fromJson(v));
 }
 
 Future<PageData<WordBook>> wordBookPageListApi({
   int? current,
   int? size,
 }) async {
-  return await HttpRequest().post(
+  final res = await HttpRequest().post(
     '/client/word-book/pageList',
     data: {'current': current, 'size': size},
   );
+  return PageData.fromJson(res.data, (v) => WordBook.fromJson(v));
 }
 
 Future<String> studysetCreateApi({
   String? title,
   String? subtitle,
 }) async {
-  return await HttpRequest().post(
+  final res = await HttpRequest().post(
     '/client/studyset/create',
     data: {'title': title, 'subtitle': subtitle},
   );
+  return res.data;
 }
 
 Future<Plan> planCreateApi({
@@ -38,7 +41,7 @@ Future<Plan> planCreateApi({
   List<String>? wordBookKeys,
   int? learnNumOfDay,
 }) async {
-  return await HttpRequest().post(
+  final res = await HttpRequest().post(
     '/client/plan/create',
     data: {
       'planName': planName,
@@ -47,6 +50,7 @@ Future<Plan> planCreateApi({
       'learnNumOfDay': learnNumOfDay
     },
   );
+  return res.data;
 }
 
 Future<String> memberRegisterApi({
@@ -55,7 +59,7 @@ Future<String> memberRegisterApi({
   String? email,
   String? memberName,
 }) async {
-  return await HttpRequest().post(
+  final res = await HttpRequest().post(
     '/client/member/register',
     data: {
       'nickName': nickName,
@@ -64,14 +68,16 @@ Future<String> memberRegisterApi({
       'memberName': memberName
     },
   );
+  return res.data;
 }
 
 Future<MemberLoginResponse> memberLoginApi({
   String? memberName,
   String? password,
 }) async {
-  return await HttpRequest().post(
+  final res = await HttpRequest().post(
     '/client/member/login',
     data: {'memberName': memberName, 'password': password},
   );
+  return res.data;
 }

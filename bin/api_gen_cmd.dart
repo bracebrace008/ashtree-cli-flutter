@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
@@ -32,6 +31,8 @@ class ApiGenCommand extends Command {
     'boolean': 'bool',
   };
 
+  List<String> models = [];
+
   parseRequestScheme(Map<String, dynamic> scheme, Map<String, dynamic> objMap) {
     if (scheme['type'] == 'object') {
       scheme['properties'].forEach((key, value) {
@@ -46,12 +47,16 @@ class ApiGenCommand extends Command {
 
   parseResponseScheme(String responseRef) {
     String type = responseRef.split('/').last;
+    late String resType;
     if (type.contains('MyPageData')) {
-      String resType = type.replaceAll('CommonResponseMyPageData', '');
-      return 'PageData<${resType}>';
+      resType = type.replaceAll('CommonResponseMyPageData', '');
     } else {
-      return type.replaceAll('CommonResponse', '');
+      resType = type.replaceAll('CommonResponse', '');
     }
+    if (!['String', 'Int', 'Bool'].contains(resType)) {
+      models.add(resType);
+    }
+    return type.contains('MyPageData') ? 'PageData<$resType>' : resType;
   }
 
   @override
@@ -67,7 +72,7 @@ class ApiGenCommand extends Command {
     var projectName = loadYaml(pubspecFile.readAsStringSync())['name'];
     apiContent += '''
       import 'package:$projectName/utils/http/http_request.dart';
-      import 'package:$projectName/utils/http/http_request.dart';
+      import 'package:$projectName/models/page_data/page_data.dart';
     ''';
     var content = await file.readAsString();
     var jsonData = jsonDecode(content);
@@ -105,13 +110,15 @@ class ApiGenCommand extends Command {
       }
       apiContent += '''
         Future<${element.response}> ${element.path.camelCase}Api(${requestParams != null ? '{${requestParams},}' : ''}) async {
-         return await HttpRequest().${element.method}(
+         final res = await HttpRequest().${element.method}(
           '/${serviceName + element.path}',
           ${requestData != null ? 'data:{$requestData},' : ''}
           );
+          ${!element.response!.contains('PageData') ? 'return res.data' : 'return PageData.fromJson(res.data, (v) => ${RegExp(r'PageData<(.*)>').firstMatch(element.response!)!.group(1)}.fromJson(v))'};
          }
       ''';
     });
+    print('models: $models');
     File apiFile = File('lib/api/api.dart');
     apiFile.writeAsStringSync(apiContent);
     await Process.run('dart', ['format', 'lib/api/api.dart']);
