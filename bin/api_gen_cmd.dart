@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:yaml/yaml.dart';
+import 'package:path/path.dart' as path;
 
 class ApiItem {
   String path = '';
@@ -57,6 +58,58 @@ class ApiGenCommand extends Command {
       models.add(resType);
     }
     return type.contains('MyPageData') ? 'PageData<$resType>' : resType;
+  }
+
+  parseModelScheme(Map<String, dynamic> modelScheme, propsMap, objectProps) {
+    if (modelScheme['properties'] == null) {
+      return;
+    }
+    modelScheme['properties'].forEach((key, value) {
+      if (value['type'] == 'array') {
+        String type =
+            value['items']['type'] ?? value['items']['\$ref'].split('/').last;
+        objectProps.add(type);
+        propsMap[key] = 'List<${primeTypeMap[type] ?? type}>';
+      } else {
+        String type = value['type'] ?? value['items']['\$ref'].split('/').last;
+        propsMap[key] = primeTypeMap[type] ?? type;
+      }
+    });
+  }
+
+  buildModels(Map<String, dynamic> scheme, String projectName) async {
+    await Future.forEach(scheme.entries, (element) async {
+      if (element.value['type'] == 'object') {
+        if (!element.key.contains('MyPageData') &&
+            !element.key.contains('CommonResponse') &&
+            !element.key.contains('Request')) {
+          var propsMap = {};
+          List<String> objectProps = [];
+          parseModelScheme(element.value, propsMap, objectProps);
+          var scriptPath = path.dirname(path.fromUri(Platform.script));
+          var templatePath =
+              path.join(path.dirname(scriptPath), 'templates/freezed');
+          final generator =
+              await MasonGenerator.fromBrick(Brick.path(templatePath));
+
+          final target = DirectoryGeneratorTarget(Directory('lib/models'));
+          final vars = <String, dynamic>{
+            'modelName': element.key,
+            'properties':
+                propsMap.entries.map((e) => '${e.value}? ${e.key}').join(',\n'),
+            'objProps': objectProps
+                .where((element) => primeTypeMap[element] == null)
+                .toList()
+                .map((String e) =>
+                    "import 'package:${projectName}/models/${e.snakeCase}/${e.snakeCase}.dart';")
+                .join('\n')
+                .toString()
+          };
+
+          await generator.generate(target, vars: vars);
+        }
+      }
+    });
   }
 
   @override
@@ -114,13 +167,32 @@ class ApiGenCommand extends Command {
           '/${serviceName + element.path}',
           ${requestData != null ? 'data:{$requestData},' : ''}
           );
-          ${!element.response!.contains('PageData') ? 'return res.data' : 'return PageData.fromJson(res.data, (v) => ${RegExp(r'PageData<(.*)>').firstMatch(element.response!)!.group(1)}.fromJson(v))'};
+          ${!element.response!.contains('PageData') ? 'return res.data' : 'return PageData.fromJson(res.data, (Object? v) => ${RegExp(r'PageData<(.*)>').firstMatch(element.response!)!.group(1)}.fromJson(v as Map<String, dynamic>))'};
          }
       ''';
     });
-    print('models: $models');
+    await buildModels(jsonData['components']['schemas'], projectName);
     File apiFile = File('lib/api/api.dart');
+    apiContent = apiItems
+            .map((e) {
+              late String type;
+              if (e.response!.contains('PageData')) {
+                type = RegExp(r'PageData<(.*)>')
+                    .firstMatch(e.response!)!
+                    .group(1)!;
+              } else {
+                type = e.response!;
+              }
+              return type;
+            })
+            .where((element) => element != 'String' && element != 'Boolean')
+            .map((e) =>
+                'import \'package:$projectName/models/${e.snakeCase}/${e.snakeCase}.dart\';')
+            .join('\n') +
+        apiContent;
     apiFile.writeAsStringSync(apiContent);
+    await Process.run('dart',
+        ['run', 'build_runner', 'build', '--delete-conflicting-outputs']);
     await Process.run('dart', ['format', 'lib/api/api.dart']);
   }
 }

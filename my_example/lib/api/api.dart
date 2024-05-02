@@ -1,3 +1,7 @@
+import 'package:my_example/models/word/word.dart';
+import 'package:my_example/models/word_book/word_book.dart';
+import 'package:my_example/models/plan/plan.dart';
+import 'package:my_example/models/member_login_response/member_login_response.dart';
 import 'package:my_example/utils/http/http_request.dart';
 import 'package:my_example/models/page_data/page_data.dart';
 
@@ -10,7 +14,8 @@ Future<PageData<Word>> wordPageListApi({
     '/client/word/pageList',
     data: {'current': current, 'size': size, 'wordBookKey': wordBookKey},
   );
-  return PageData.fromJson(res.data, (v) => Word.fromJson(v));
+  return PageData.fromJson(
+      res.data, (Object? v) => Word.fromJson(v as Map<String, dynamic>));
 }
 
 Future<PageData<WordBook>> wordBookPageListApi({
@@ -21,7 +26,8 @@ Future<PageData<WordBook>> wordBookPageListApi({
     '/client/word-book/pageList',
     data: {'current': current, 'size': size},
   );
-  return PageData.fromJson(res.data, (v) => WordBook.fromJson(v));
+  return PageData.fromJson(
+      res.data, (Object? v) => WordBook.fromJson(v as Map<String, dynamic>));
 }
 
 Future<String> studysetCreateApi({
