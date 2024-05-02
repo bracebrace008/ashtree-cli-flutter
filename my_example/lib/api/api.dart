@@ -5,6 +5,7 @@ import 'package:my_example/models/member_login_response/member_login_response.da
 import 'package:my_example/utils/http/http_request.dart';
 import 'package:my_example/models/page_data/page_data.dart';
 
+/* 分页查询单词 POST /client/word/pageList*/
 Future<PageData<Word>> wordPageListApi({
   int? current,
   int? size,
@@ -18,6 +19,7 @@ Future<PageData<Word>> wordPageListApi({
       res.data, (Object? v) => Word.fromJson(v as Map<String, dynamic>));
 }
 
+/* 分页查询单词本 POST /client/word-book/pageList*/
 Future<PageData<WordBook>> wordBookPageListApi({
   int? current,
   int? size,
@@ -30,6 +32,7 @@ Future<PageData<WordBook>> wordBookPageListApi({
       res.data, (Object? v) => WordBook.fromJson(v as Map<String, dynamic>));
 }
 
+/* 创建学习集 POST /client/studyset/create*/
 Future<String> studysetCreateApi({
   String? title,
   String? subtitle,
@@ -41,6 +44,7 @@ Future<String> studysetCreateApi({
   return res.data;
 }
 
+/* 创建计划 POST /client/plan/create*/
 Future<Plan> planCreateApi({
   String? planName,
   String? planDesc,
@@ -59,6 +63,7 @@ Future<Plan> planCreateApi({
   return res.data;
 }
 
+/* 用户注册 POST /client/member/register*/
 Future<String> memberRegisterApi({
   String? nickName,
   String? password,
@@ -77,6 +82,7 @@ Future<String> memberRegisterApi({
   return res.data;
 }
 
+/* 用户登录 POST /client/member/login*/
 Future<MemberLoginResponse> memberLoginApi({
   String? memberName,
   String? password,

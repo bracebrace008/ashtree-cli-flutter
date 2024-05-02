@@ -9,6 +9,7 @@ import 'package:path/path.dart' as path;
 class ApiItem {
   String path = '';
   String method = '';
+  String summary = '';
   Map<String, dynamic> request = {};
   String? response;
 }
@@ -146,6 +147,7 @@ class ApiGenCommand extends Command {
             jsonData['components']['schemas'][requestRef.split('/').last];
         parseRequestScheme(requestScheme, objMap);
         apiItem.request = objMap;
+        apiItem.summary = element.value[element.value.keys.first]['summary'];
       }
       apiItems.add(apiItem);
     });
@@ -162,6 +164,7 @@ class ApiGenCommand extends Command {
             .join(',');
       }
       apiContent += '''
+        /* ${element.summary} ${element.method.upperCase} /${serviceName + element.path} */
         Future<${element.response}> ${element.path.camelCase}Api(${requestParams != null ? '{${requestParams},}' : ''}) async {
          final res = await HttpRequest().${element.method}(
           '/${serviceName + element.path}',
