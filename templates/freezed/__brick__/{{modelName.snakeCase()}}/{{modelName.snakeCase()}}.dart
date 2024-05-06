@@ -8,7 +8,7 @@ part '{{modelName.snakeCase()}}.g.dart';
 @freezed
 class {{modelName.pascalCase()}} with _${{modelName.pascalCase()}} {
   const factory {{modelName.pascalCase()}}({
-    {{{ properties }}}
+    {{{ properties }},}
   }) = _{{modelName.pascalCase()}};
 
   factory {{modelName.pascalCase()}}.fromJson(Map<String, dynamic> json) =>
