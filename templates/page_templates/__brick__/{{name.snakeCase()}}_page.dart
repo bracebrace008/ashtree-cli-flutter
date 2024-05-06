@@ -17,6 +17,7 @@ class {{name.pascalCase()}}Page extends StatelessWidget {
 {{#stateful}}
 class {{name.pascalCase()}}Page extends StatefulWidget {
   const {{name.pascalCase()}}Page({ Key? key }) : super(key: key);
+  
 
   @override
   State createState() => _{{name.pascalCase()}}PageState();
