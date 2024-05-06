@@ -21,6 +21,11 @@ class ApiGenCommand extends Command {
 
   ApiGenCommand() {}
 
+  final logger = Logger(
+    level: Level.verbose,
+    theme: LogTheme(),
+  );
+
   List<ApiItem> apiItems = [];
 
   String apiContent = '';
@@ -102,8 +107,10 @@ class ApiGenCommand extends Command {
           final target = DirectoryGeneratorTarget(Directory('lib/models'));
           final vars = <String, dynamic>{
             'modelName': element.key,
-            'properties':
-                propsMap.entries.map((e) => '${e.value}? ${e.key}').join(',\n'),
+            'properties': propsMap.entries
+                    .map((e) => '${e.value}? ${e.key}')
+                    .join(',\n') +
+                ',',
             'objProps': objectProps
                 .where((element) => primeTypeMap[element] == null)
                 .toList()
@@ -141,6 +148,7 @@ class ApiGenCommand extends Command {
       print('File does not exist');
       return;
     }
+    var progress = logger.progress('生成api代码及models...');
     File pubspecFile = File('pubspec.yaml');
     var projectName = loadYaml(pubspecFile.readAsStringSync())['name'];
     apiContent += '''
@@ -228,5 +236,7 @@ class ApiGenCommand extends Command {
     await Process.run('dart',
         ['run', 'build_runner', 'build', '--delete-conflicting-outputs']);
     await Process.run('dart', ['format', 'lib/api/api.dart']);
+    await Process.run('dart', ['format', 'lib/models']);
+    progress.complete('api代码及models生成成功！');
   }
 }
