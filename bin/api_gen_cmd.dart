@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:yaml/yaml.dart';
-import 'package:path/path.dart' as path;
 
 class ApiItem {
   String path = '';
