@@ -1,0 +1,437 @@
+{
+  "openapi": "3.0.1",
+  "info": { "title": "OpenAPI definition", "version": "v0" },
+  "servers": [
+    { "url": "http://localhost:8201", "description": "Generated server url" }
+  ],
+  "paths": {
+    "/word/pageList": {
+      "post": {
+        "tags": ["WordController"],
+        "summary": "分页查询单词",
+        "operationId": "pageList",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/WordPageListRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseMyPageDataWord"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/word-book/pageList": {
+      "post": {
+        "tags": ["WordBookController"],
+        "summary": "分页查询单词本",
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WordBookPageListRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseMyPageDataWordBook"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/studyset/create": {
+      "post": {
+        "tags": ["StudysetController"],
+        "summary": "创建学习集",
+        "operationId": "create_1",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StudysetCreateRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plan/listForUser": {
+      "post": {
+        "tags": ["PlanController"],
+        "summary": "用户计划列表查询",
+        "operationId": "list",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseListPlan"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plan/create": {
+      "post": {
+        "tags": ["PlanController"],
+        "summary": "创建计划",
+        "operationId": "create_2",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PlanCreateRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CommonResponsePlan" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/member/register": {
+      "post": {
+        "tags": ["MemberController"],
+        "summary": "用户注册",
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MemberRegisterRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/member/login": {
+      "post": {
+        "tags": ["MemberController"],
+        "summary": "用户登录",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MemberLoginRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponseMemberLoginResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "WordPageListRequest": {
+        "type": "object",
+        "properties": {
+          "current": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "wordBookKey": {
+            "maxLength": 2147483647,
+            "minLength": 2,
+            "type": "string"
+          }
+        }
+      },
+      "CommonResponseMyPageDataWord": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "msg": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/MyPageDataWord" }
+        }
+      },
+      "MyPageDataWord": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Word" }
+          },
+          "total": { "type": "integer", "format": "int64" },
+          "size": { "type": "integer", "format": "int64" },
+          "current": { "type": "integer", "format": "int64" },
+          "pages": { "type": "integer", "format": "int64" }
+        }
+      },
+      "Translation": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "pos": { "type": "string" },
+          "tranCn": { "type": "string" },
+          "tranOther": { "type": "string" }
+        }
+      },
+      "Word": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "bookKey": { "type": "string" },
+          "phone": { "type": "string" },
+          "trans": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Translation" }
+          },
+          "ukphone": { "type": "string" },
+          "usphone": { "type": "string" },
+          "wordHead": { "type": "string" },
+          "wordKey": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "WordBookPageListRequest": {
+        "type": "object",
+        "properties": {
+          "current": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" }
+        }
+      },
+      "CommonResponseMyPageDataWordBook": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "msg": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/MyPageDataWordBook" }
+        }
+      },
+      "MyPageDataWordBook": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/WordBook" }
+          },
+          "total": { "type": "integer", "format": "int64" },
+          "size": { "type": "integer", "format": "int64" },
+          "current": { "type": "integer", "format": "int64" },
+          "pages": { "type": "integer", "format": "int64" }
+        }
+      },
+      "WordBook": {
+        "type": "object",
+        "properties": {
+          "wordBookId": { "type": "integer", "format": "int64" },
+          "wordBookKey": { "type": "string" },
+          "title": { "type": "string" },
+          "subtitle": { "type": "string" },
+          "createTime": { "type": "string", "format": "date-time" },
+          "wordCount": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "tags": { "type": "string" }
+        }
+      },
+      "StudysetCreateRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 2147483647,
+            "minLength": 2,
+            "type": "string"
+          },
+          "subtitle": { "type": "string" }
+        }
+      },
+      "CommonResponseString": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "msg": { "type": "string" },
+          "data": { "type": "string" }
+        }
+      },
+      "CommonResponseListPlan": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "msg": { "type": "string" },
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Plan" }
+          }
+        }
+      },
+      "Plan": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "planName": { "type": "string" },
+          "planDesc": { "type": "string" },
+          "wordBookKeys": { "type": "array", "items": { "type": "string" } },
+          "memberId": { "type": "integer", "format": "int64" },
+          "learnNumOfDay": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "PlanCreateRequest": {
+        "type": "object",
+        "properties": {
+          "planName": {
+            "maxLength": 2147483647,
+            "minLength": 2,
+            "type": "string"
+          },
+          "planDesc": { "maxLength": 256, "minLength": 0, "type": "string" },
+          "wordBookKeys": { "type": "array", "items": { "type": "string" } },
+          "learnNumOfDay": {
+            "minimum": 2,
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CommonResponsePlan": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "msg": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/Plan" }
+        }
+      },
+      "MemberRegisterRequest": {
+        "type": "object",
+        "properties": {
+          "nickName": { "type": "string" },
+          "password": {
+            "pattern": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
+            "type": "string"
+          },
+          "email": {
+            "pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
+            "type": "string"
+          },
+          "memberName": {
+            "maxLength": 2147483647,
+            "minLength": 2,
+            "type": "string"
+          }
+        }
+      },
+      "MemberLoginRequest": {
+        "type": "object",
+        "properties": {
+          "memberName": {
+            "maxLength": 2147483647,
+            "minLength": 2,
+            "type": "string"
+          },
+          "password": {
+            "pattern": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+={\\}\\[\\]:;\"'<,>.?/~`-]{8,}$",
+            "type": "string"
+          }
+        }
+      },
+      "CommonResponseMemberLoginResponse": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "msg": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/MemberLoginResponse" }
+        }
+      },
+      "MemberLoginResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": { "type": "string" },
+          "refreshToken": { "type": "string" },
+          "memberName": { "type": "string" },
+          "memberId": { "type": "integer", "format": "int64" }
+        }
+      }
+    }
+  }
+}
