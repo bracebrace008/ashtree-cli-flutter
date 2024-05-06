@@ -134,7 +134,7 @@ class ApiGenCommand extends Command {
       return 'PageData.fromJson(res.data, (Object? v) => ${RegExp(r'PageData<(.*)>').firstMatch(response)!.group(1)}.fromJson(v as Map<String, dynamic>))';
     }
     if (response.contains('List')) {
-      return 'res.data.map((e) => ${response.replaceAll('List<', '').replaceAll('>', '')}.fromJson(e as Map<String, dynamic>)).toList()';
+      return '(res.data as List).map((e) => ${response.replaceAll('List<', '').replaceAll('>', '')}.fromJson(e as Map<String, dynamic>)).toList()';
     }
     if (response != 'String' && response != 'Boolean') {
       return '${response}.fromJson(res.data)';

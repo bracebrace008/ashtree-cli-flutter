@@ -49,7 +49,9 @@ Future<List<Plan>> planListForUserApi() async {
   final res = await HttpRequest().post(
     '/client/plan/listForUser',
   );
-  return res.data.map((e) => Plan.fromJson(e as Map<String, dynamic>)).toList();
+  return (res.data as List)
+      .map((e) => Plan.fromJson(e as Map<String, dynamic>))
+      .toList();
 }
 
 /* 创建计划 POST /client/plan/create */
