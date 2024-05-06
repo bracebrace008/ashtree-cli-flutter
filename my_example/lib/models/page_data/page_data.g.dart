@@ -12,10 +12,10 @@ _$PageDataImpl<T> _$$PageDataImplFromJson<T>(
 ) =>
     _$PageDataImpl<T>(
       records: (json['records'] as List<dynamic>).map(fromJsonT).toList(),
-      total: (json['total'] as num).toInt(),
-      size: (json['size'] as num).toInt(),
-      current: (json['current'] as num).toInt(),
-      pages: (json['pages'] as num).toInt(),
+      total: json['total'] as int,
+      size: json['size'] as int,
+      current: json['current'] as int,
+      pages: json['pages'] as int,
     );
 
 Map<String, dynamic> _$$PageDataImplToJson<T>(
