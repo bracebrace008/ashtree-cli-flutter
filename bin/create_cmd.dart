@@ -81,7 +81,7 @@ class CreateCommand extends Command {
 
     await addEasyLocalizatioConfig(projectName);
 
-    progress.complete('project generated successfully!');
+    progress.complete('project generated successfully!\n');
     print('项目创建完成！');
   }
 }
