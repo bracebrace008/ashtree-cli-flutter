@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.0.9
+
+- api_gen 返回类型修复
+
 ## 1.0.8
 
 - api_gen 优化
