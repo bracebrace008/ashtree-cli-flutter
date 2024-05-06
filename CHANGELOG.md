@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.0.5
+
+- templates 用git方式引入
+- page_gen修复
+
 ## 1.0.4
 
 - 配置修复
