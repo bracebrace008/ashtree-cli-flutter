@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.0.6
+
+- page_gen模版修复
+- api_gen修复
+
 ## 1.0.5
 
 - templates 用git方式引入
