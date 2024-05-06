@@ -68,8 +68,8 @@ class CreateCommand extends Command {
     destinationDir.createSync();
     var progress = logger.progress('Generating project...');
     var scriptPath = path.dirname(path.fromUri(Platform.script));
-    var templatePath =
-        path.join(path.dirname(scriptPath), 'project_templates/bloc_go_hive');
+    var templatePath = path.join(
+        path.dirname(scriptPath), 'templates/project_templates/bloc_go_hive');
     final generator = await MasonGenerator.fromBrick(Brick.path(templatePath));
     final target = DirectoryGeneratorTarget(Directory(projectName));
     final vars = <String, dynamic>{

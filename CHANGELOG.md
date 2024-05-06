@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.0.3
+
+- 添加templates到打包文件中
 
 ## 1.0.2
 
