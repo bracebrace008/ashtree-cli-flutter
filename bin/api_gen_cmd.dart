@@ -54,11 +54,20 @@ class ApiGenCommand extends Command {
       resType = type.replaceAll('CommonResponseMyPageData', '');
     } else {
       resType = type.replaceAll('CommonResponse', '');
+      if (resType.contains('List')) {
+        resType = resType.replaceAll('List', '');
+      }
     }
     if (!['String', 'Int', 'Bool'].contains(resType)) {
       models.add(resType);
     }
-    return type.contains('MyPageData') ? 'PageData<$resType>' : resType;
+    if (type.contains('MyPageData')) {
+      return 'PageData<$resType>';
+    }
+    if (type.contains('List')) {
+      return 'List<$resType>';
+    }
+    return resType;
   }
 
   parseModelScheme(Map<String, dynamic> modelScheme, propsMap, objectProps) {
@@ -113,6 +122,19 @@ class ApiGenCommand extends Command {
     });
   }
 
+  getReturnStr(String? response) {
+    if (response == null) {
+      return 'res.data';
+    }
+    if (response.contains('PageData')) {
+      return 'PageData.fromJson(res.data, (Object? v) => ${RegExp(r'PageData<(.*)>').firstMatch(response)!.group(1)}.fromJson(v as Map<String, dynamic>))';
+    }
+    if (response.contains('List')) {
+      return 'res.data.map((e) => ${response.replaceAll('List<', '').replaceAll('>', '')}.fromJson(e as Map<String, dynamic>)).toList()';
+    }
+    return 'res.data';
+  }
+
   @override
   void run() async {
     var file = File('lib/api/client.json');
@@ -135,12 +157,19 @@ class ApiGenCommand extends Command {
       ApiItem apiItem = ApiItem();
       apiItem.path = element.key;
       apiItem.method = element.value.keys.first;
-      var requestRef = element.value[element.value.keys.first]['requestBody']
-          ['content']['application/json']['schema']['\$ref'];
-      var responseRef = element.value[element.value.keys.first]['responses']
-          ['200']['content']['*/*']['schema']['\$ref'];
+      var requestRef, responseRef;
+      try {
+        requestRef = element.value[element.value.keys.first]['requestBody']
+            ['content']['application/json']['schema']['\$ref'];
+      } catch (e) {}
+      try {
+        responseRef = element.value[element.value.keys.first]['responses']
+            ['200']['content']['*/*']['schema']['\$ref'];
+      } catch (e) {}
+      if (responseRef != null) {
+        apiItem.response = parseResponseScheme(responseRef);
+      }
 
-      apiItem.response = parseResponseScheme(responseRef);
       if (requestRef != null) {
         Map<String, dynamic> objMap = {};
         var requestScheme =
@@ -152,7 +181,6 @@ class ApiGenCommand extends Command {
       apiItems.add(apiItem);
     });
     apiItems.forEach((element) {
-      print(element.response);
       var requestParams = null;
       var requestData = null;
       if (element.request.entries.toList().isNotEmpty) {
@@ -170,7 +198,7 @@ class ApiGenCommand extends Command {
           '/${serviceName + element.path}',
           ${requestData != null ? 'data:{$requestData},' : ''}
           );
-          ${!element.response!.contains('PageData') ? 'return res.data' : 'return PageData.fromJson(res.data, (Object? v) => ${RegExp(r'PageData<(.*)>').firstMatch(element.response!)!.group(1)}.fromJson(v as Map<String, dynamic>))'};
+          return ${getReturnStr(element.response)};
          }
       ''';
     });
@@ -178,19 +206,25 @@ class ApiGenCommand extends Command {
     File apiFile = File('lib/api/api.dart');
     apiContent = apiItems
             .map((e) {
-              late String type;
-              if (e.response!.contains('PageData')) {
+              String? type;
+              if (e.response != null && e.response!.contains('PageData')) {
                 type = RegExp(r'PageData<(.*)>')
                     .firstMatch(e.response!)!
                     .group(1)!;
+              } else if (e.response != null && e.response!.contains('List')) {
+                type = e.response!.replaceAll('List<', '').replaceAll('>', '');
               } else {
-                type = e.response!;
+                type = e.response;
               }
+
               return type;
             })
-            .where((element) => element != 'String' && element != 'Boolean')
+            .where((element) =>
+                element != 'String' && element != 'Boolean' && element != null)
+            .toSet()
+            .toList()
             .map((e) =>
-                'import \'package:$projectName/models/${e.snakeCase}/${e.snakeCase}.dart\';')
+                'import \'package:$projectName/models/${e!.snakeCase}/${e.snakeCase}.dart\';')
             .join('\n') +
         apiContent;
     apiFile.writeAsStringSync(apiContent);
