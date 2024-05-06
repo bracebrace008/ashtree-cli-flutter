@@ -96,11 +96,9 @@ class ApiGenCommand extends Command {
           var propsMap = {};
           List<String> objectProps = [];
           parseModelScheme(element.value, propsMap, objectProps);
-          var scriptPath = path.dirname(path.fromUri(Platform.script));
-          var templatePath =
-              path.join(path.dirname(scriptPath), 'templates/freezed');
-          final generator =
-              await MasonGenerator.fromBrick(Brick.path(templatePath));
+          final generator = await MasonGenerator.fromBrick(Brick.git(GitPath(
+              'https://github.com/bracebrace008/ashtree-cli-flutter',
+              path: 'templates/freezed')));
 
           final target = DirectoryGeneratorTarget(Directory('lib/models'));
           final vars = <String, dynamic>{
