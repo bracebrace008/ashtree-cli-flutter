@@ -68,7 +68,7 @@ Future<Plan> planCreateApi({
       'learnNumOfDay': learnNumOfDay
     },
   );
-  return res.data;
+  return Plan.fromJson(res.data);
 }
 
 /* 用户注册 POST /client/member/register */
@@ -99,5 +99,5 @@ Future<MemberLoginResponse> memberLoginApi({
     '/client/member/login',
     data: {'memberName': memberName, 'password': password},
   );
-  return res.data;
+  return MemberLoginResponse.fromJson(res.data);
 }

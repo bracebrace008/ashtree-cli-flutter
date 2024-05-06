@@ -136,6 +136,9 @@ class ApiGenCommand extends Command {
     if (response.contains('List')) {
       return 'res.data.map((e) => ${response.replaceAll('List<', '').replaceAll('>', '')}.fromJson(e as Map<String, dynamic>)).toList()';
     }
+    if (response != 'String' && response != 'Boolean') {
+      return '${response}.fromJson(res.data)';
+    }
     return 'res.data';
   }
 
