@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ashtree_app/util/extensions/extensions.dart';
+import 'package:{{projectName.snakeCase()}}/util/extensions/extensions.dart';
 
 {{#stateless}}
 class {{name.pascalCase()}}Page extends StatelessWidget {

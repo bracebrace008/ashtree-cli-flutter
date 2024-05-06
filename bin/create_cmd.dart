@@ -5,7 +5,6 @@ import 'package:mason/mason.dart';
 import 'package:xml/xml.dart';
 
 import 'utils.dart';
-import 'package:path/path.dart' as path;
 
 class CreateCommand extends Command {
   @override
@@ -67,10 +66,10 @@ class CreateCommand extends Command {
     }
     destinationDir.createSync();
     var progress = logger.progress('Generating project...');
-    var scriptPath = path.dirname(path.fromUri(Platform.script));
-    var templatePath = path.join(
-        path.dirname(scriptPath), 'templates/project_templates/bloc_go_hive');
-    final generator = await MasonGenerator.fromBrick(Brick.path(templatePath));
+
+    final generator = await MasonGenerator.fromBrick(Brick.git(GitPath(
+        'https://github.com/bracebrace008/ashtree-cli-flutter',
+        path: 'templates/project_templates/bloc_go_hive')));
     final target = DirectoryGeneratorTarget(Directory(projectName));
     final vars = <String, dynamic>{
       'projectName': projectName,

@@ -29,5 +29,10 @@ vars:
   name:
     type: string
     description: Your name
-    default: Dash
+    default: ""
     prompt: What is your name?
+  projectName:
+    type: string
+    description: project name
+    default: ""
+    prompt: What is your projectName?

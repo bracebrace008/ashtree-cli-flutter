@@ -24,14 +24,16 @@ class PageGenCommand extends Command {
     required Directory pageDir,
     required String pageName,
     required String pageType,
+    required String projectName,
   }) async {
-    var scriptPath = path.dirname(path.fromUri(Platform.script));
-    var templatePath = path.join(path.dirname(scriptPath), 'page_templates');
-    final generator = await MasonGenerator.fromBrick(Brick.path(templatePath));
+    final generator = await MasonGenerator.fromBrick(Brick.git(GitPath(
+        'https://github.com/bracebrace008/ashtree-cli-flutter',
+        path: 'templates/page_templates')));
 
     final target = DirectoryGeneratorTarget(pageDir);
     final vars = <String, dynamic>{
       'name': pageName,
+      'projectName': projectName,
       'stateless': pageType == 'stateless',
       'stateful': pageType == 'stateful',
     };
@@ -91,7 +93,11 @@ class PageGenCommand extends Command {
     pageDir.createSync();
     var progress = logger.progress('Generating page...');
     // 生成页面
-    generatePage(pageName: pageName, pageDir: pageDir, pageType: pageType);
+    generatePage(
+        pageName: pageName,
+        pageDir: pageDir,
+        pageType: pageType,
+        projectName: projectName);
     updateRouter(pageName, projectName);
     await Process.run('dart', ['format', pageDir.path]);
     await Process.run('dart', ['format', 'lib/router/']);
