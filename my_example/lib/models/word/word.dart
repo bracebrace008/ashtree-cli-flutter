@@ -9,17 +9,16 @@ part 'word.g.dart';
 class Word with _$Word {
   const factory Word({
     String? id,
-String? bookKey,
-String? phone,
-List<Translation>? trans,
-String? ukphone,
-String? usphone,
-String? wordHead,
-String? wordKey,
-String? createdAt,
-String? updatedAt
+    String? bookKey,
+    String? phone,
+    List<Translation>? trans,
+    String? ukphone,
+    String? usphone,
+    String? wordHead,
+    String? wordKey,
+    String? createdAt,
+    String? updatedAt,
   }) = _Word;
 
-  factory Word.fromJson(Map<String, dynamic> json) =>
-      _$WordFromJson(json);
+  factory Word.fromJson(Map<String, dynamic> json) => _$WordFromJson(json);
 }
