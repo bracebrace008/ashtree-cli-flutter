@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.0.7
+
+- api_gen tempalte引入方式修复
+
 ## 1.0.6
 
 - page_gen模版修复
