@@ -157,6 +157,7 @@ class ApiGenCommand extends Command {
     apiContent += '''
       import 'package:$projectName/utils/http/http_request.dart';
       import 'package:$projectName/models/page_data/page_data.dart';
+      import 'package:$projectName/api/api_paths.dart';
     ''';
     var content = await file.readAsString();
     var jsonData = jsonDecode(content);
@@ -203,7 +204,7 @@ class ApiGenCommand extends Command {
         /* ${element.summary} ${element.method.upperCase} /${serviceName + element.path} */
         Future<${element.response}> ${element.path.camelCase}Api(${requestParams != null ? '{${requestParams},}' : ''}) async {
          final res = await HttpRequest().${element.method}(
-          '/${serviceName + element.path}',
+          ${(serviceName + element.path).camelCase}Path,
           ${requestData != null ? 'data:{$requestData},' : ''}
           );
           return ${getReturnStr(element.response)};
@@ -211,7 +212,6 @@ class ApiGenCommand extends Command {
       ''';
     });
     await buildModels(jsonData['components']['schemas'], projectName);
-    File apiFile = File('lib/api/api.dart');
     apiContent = apiItems
             .map((e) {
               String? type;
@@ -235,10 +235,24 @@ class ApiGenCommand extends Command {
                 'import \'package:$projectName/models/${e!.snakeCase}/${e.snakeCase}.dart\';')
             .join('\n') +
         apiContent;
+    File apiFile = File('lib/api/${serviceName}.dart');
     apiFile.writeAsStringSync(apiContent);
+    File apiPathsFile = File('lib/api/api_paths.dart');
+    if (!apiPathsFile.existsSync()) {
+      apiPathsFile.createSync();
+    }
+    String originPathContent = apiPathsFile.readAsStringSync();
+    apiItems.forEach((apiItem) {
+      String content =
+          'const String ${(serviceName + apiItem.path).camelCase}Path = \'/${serviceName + apiItem.path}\';';
+      if (!originPathContent.contains(content)) {
+        originPathContent += content + '\n';
+      }
+    });
+    apiPathsFile.writeAsStringSync(originPathContent);
     await Process.run('dart',
         ['run', 'build_runner', 'build', '--delete-conflicting-outputs']);
-    await Process.run('dart', ['format', 'lib/api/api.dart']);
+    await Process.run('dart', ['format', 'lib/api']);
     await Process.run('dart', ['format', 'lib/models']);
     progress.complete('api代码及models生成成功！');
   }
