@@ -235,7 +235,10 @@ class ApiGenCommand extends Command {
                 'import \'package:$projectName/models/${e!.snakeCase}/${e.snakeCase}.dart\';')
             .join('\n') +
         apiContent;
-    File apiFile = File('lib/api/${serviceName}.dart');
+    File apiFile = File('lib/api/${serviceName}_api.dart');
+    if (!apiFile.existsSync()) {
+      apiFile.createSync();
+    }
     apiFile.writeAsStringSync(apiContent);
     File apiPathsFile = File('lib/api/api_paths.dart');
     if (!apiPathsFile.existsSync()) {

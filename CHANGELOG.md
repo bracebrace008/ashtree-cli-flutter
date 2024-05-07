@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.1.1
+
+- api_gen 优化
+
 ## 1.1.0
 
 - api_gen 优化, 生成 path 路径
