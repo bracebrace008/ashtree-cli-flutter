@@ -53,7 +53,8 @@ class IntlExtractCommand extends Command {
     Map<String, dynamic> jsonMapZhCN = {};
     Map<String, dynamic> jsonMapEnUS = {};
     List<String> translatedTextList = tansObj.text.split('|');
-    for (int i = 0; i < translatedTextList.length; i++) {
+
+    for (int i = 0; i < _extractedTextList.length; i++) {
       jsonMapZhCN[translatedTextList[i].camelCase] = _extractedTextList[i];
       jsonMapEnUS[translatedTextList[i].camelCase] =
           translatedTextList[i].sentenceCase;
