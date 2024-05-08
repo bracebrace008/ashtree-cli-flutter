@@ -8,7 +8,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('主页'.tr()),
+        title: Text('homepage'.tr()),
       ),
       body: Center(
         child: ElevatedButton(

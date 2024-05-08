@@ -8,7 +8,7 @@ class MinePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('我的'.tr()),
+        title: Text('mine'.tr()),
       ),
       body: Center(
         child: ElevatedButton(
