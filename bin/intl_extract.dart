@@ -36,8 +36,10 @@ class IntlExtractCommand extends Command {
       var matches = regex.allMatches(content);
       for (var match in matches) {
         var extractedText = match.group(1);
-        if (!_extractedTextList.contains(extractedText) &&
-            extractedText != null) {
+        if (extractedText != null &&
+            !_extractedTextList.contains(extractedText) &&
+            extractedText.isNotEmpty &&
+            extractedText.length < 10) {
           _extractedTextList.add(extractedText);
         }
       }
@@ -45,19 +47,18 @@ class IntlExtractCommand extends Command {
 
     progress.update('Translating intl messages...');
 
-    final translator = GoogleTranslator();
+    _extractedTextList = _extractedTextList.toSet().toList();
 
-    var tansObj = await translator.translate(_extractedTextList.join('|'),
-        from: 'zh-cn', to: 'en');
+    final translator = GoogleTranslator();
 
     Map<String, dynamic> jsonMapZhCN = {};
     Map<String, dynamic> jsonMapEnUS = {};
-    List<String> translatedTextList = tansObj.text.split('|');
 
-    for (int i = 0; i < _extractedTextList.length; i++) {
-      jsonMapZhCN[translatedTextList[i].camelCase] = _extractedTextList[i];
-      jsonMapEnUS[translatedTextList[i].camelCase] =
-          translatedTextList[i].sentenceCase;
+    for (String text in _extractedTextList) {
+      await Future.delayed(Duration(milliseconds: 100));
+      var tansObj = await translator.translate((text), from: 'zh-cn', to: 'en');
+      jsonMapZhCN[tansObj.text.camelCase] = text;
+      jsonMapEnUS[tansObj.text.camelCase] = tansObj.text.sentenceCase;
     }
 
     progress.update('Writing intl messages to json files...');
@@ -68,7 +69,7 @@ class IntlExtractCommand extends Command {
       originJsonMapZhCn = jsonDecode(zhCNContent);
     } catch (e) {}
     jsonMapZhCN.addAll(originJsonMapZhCn);
-    JsonEncoder encoder = JsonEncoder.withIndent('    ');
+    JsonEncoder encoder = JsonEncoder.withIndent('  ');
     zhCNFile.writeAsStringSync(encoder.convert(jsonMapZhCN));
 
     Map<String, dynamic> originJsonMapEnUS = {};
