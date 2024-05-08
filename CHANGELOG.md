@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.1.2
+
+- intl_extract 脚本
+- intl_replace 脚本
+
 ## 1.1.1
 
 - api_gen 优化
