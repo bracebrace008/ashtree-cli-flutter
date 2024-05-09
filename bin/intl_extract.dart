@@ -68,9 +68,13 @@ class IntlExtractCommand extends Command {
       String zhCNContent = zhCNFile.readAsStringSync();
       originJsonMapZhCn = jsonDecode(zhCNContent);
     } catch (e) {}
-    jsonMapZhCN.addAll(originJsonMapZhCn);
+    jsonMapZhCN.entries.forEach((entry) {
+      if (!originJsonMapZhCn.containsKey(entry.key)) {
+        originJsonMapZhCn[entry.key] = entry.value;
+      }
+    });
     JsonEncoder encoder = JsonEncoder.withIndent('  ');
-    zhCNFile.writeAsStringSync(encoder.convert(jsonMapZhCN));
+    zhCNFile.writeAsStringSync(encoder.convert(originJsonMapZhCn));
 
     Map<String, dynamic> originJsonMapEnUS = {};
     var enUSFile = File('assets/translations/en-US.json');
@@ -78,8 +82,12 @@ class IntlExtractCommand extends Command {
       String enUSContent = enUSFile.readAsStringSync();
       originJsonMapEnUS = jsonDecode(enUSContent);
     } catch (e) {}
-    jsonMapEnUS.addAll(originJsonMapEnUS);
-    enUSFile.writeAsStringSync(encoder.convert(jsonMapEnUS));
+    jsonMapEnUS.entries.forEach((entry) {
+      if (!originJsonMapEnUS.containsKey(entry.key)) {
+        originJsonMapEnUS[entry.key] = entry.value;
+      }
+    });
+    enUSFile.writeAsStringSync(encoder.convert(originJsonMapEnUS));
     progress.complete('intl messages extracted successfully!');
   }
 }
