@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.1.3
+
+- intl_extract 脚本优化
+
 ## 1.1.2
 
 - intl_extract 脚本
