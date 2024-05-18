@@ -240,6 +240,8 @@ class ApiGenCommand extends Command {
       apiFile.createSync();
     }
     apiFile.writeAsStringSync(apiContent);
+    
+    // 生成api_paths.dart
     File apiPathsFile = File('lib/api/api_paths.dart');
     if (!apiPathsFile.existsSync()) {
       apiPathsFile.createSync();
@@ -248,14 +250,19 @@ class ApiGenCommand extends Command {
     apiItems.forEach((apiItem) {
       String content =
           'const String ${(serviceName + apiItem.path).camelCase}Path = \'/${serviceName + apiItem.path}\';';
-      if (!originPathContent.contains(content)) {
+      if (!originPathContent
+          .contains('${(serviceName + apiItem.path).camelCase}Path')) {
         originPathContent += content + '\n';
       }
     });
     apiPathsFile.writeAsStringSync(originPathContent);
+
+    // 构建model的freezed代码
     await Process.run('dart',
         ['run', 'build_runner', 'build', '--delete-conflicting-outputs']);
+    // 格式化API目录下的代码
     await Process.run('dart', ['format', 'lib/api']);
+    // 格式化models目录下的代码
     await Process.run('dart', ['format', 'lib/models']);
     progress.complete('api代码及models生成成功！');
   }
