@@ -6,7 +6,9 @@ import 'api_gen_cmd.dart';
 import 'create_cmd.dart';
 import 'imgpath_gen_cmd.dart';
 import 'intl_extract.dart';
+import 'intl_merge.dart';
 import 'intl_replace.dart';
+import 'intl_translate.dart';
 import 'page_gen_cmd.dart';
 
 void main(List<String> arguments) {
@@ -16,6 +18,8 @@ void main(List<String> arguments) {
     ..addCommand(PageGenCommand())
     ..addCommand(ApiGenCommand())
     ..addCommand(IntlExtractCommand())
+    ..addCommand(IntlTranslateCommand())
+    ..addCommand(IntlMergeCommand())
     ..addCommand(IntlReplaceCommand());
 
   runner.run(arguments).catchError((error) {

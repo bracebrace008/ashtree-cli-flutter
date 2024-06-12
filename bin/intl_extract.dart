@@ -62,32 +62,11 @@ class IntlExtractCommand extends Command {
     }
 
     progress.update('Writing intl messages to json files...');
-    var zhCNFile = File('assets/translations/zh-CN.json');
-    Map<String, dynamic> originJsonMapZhCn = {};
-    try {
-      String zhCNContent = zhCNFile.readAsStringSync();
-      originJsonMapZhCn = jsonDecode(zhCNContent);
-    } catch (e) {}
-    jsonMapZhCN.entries.forEach((entry) {
-      if (!originJsonMapZhCn.containsKey(entry.key)) {
-        originJsonMapZhCn[entry.key] = entry.value;
-      }
-    });
+    var zhCNFile = File('assets/translations/zh-CN-temp.json');
     JsonEncoder encoder = JsonEncoder.withIndent('  ');
-    zhCNFile.writeAsStringSync(encoder.convert(originJsonMapZhCn));
+    zhCNFile.writeAsStringSync(encoder.convert(jsonMapZhCN));
 
-    Map<String, dynamic> originJsonMapEnUS = {};
-    var enUSFile = File('assets/translations/en-US.json');
-    try {
-      String enUSContent = enUSFile.readAsStringSync();
-      originJsonMapEnUS = jsonDecode(enUSContent);
-    } catch (e) {}
-    jsonMapEnUS.entries.forEach((entry) {
-      if (!originJsonMapEnUS.containsKey(entry.key)) {
-        originJsonMapEnUS[entry.key] = entry.value;
-      }
-    });
-    enUSFile.writeAsStringSync(encoder.convert(originJsonMapEnUS));
-    progress.complete('intl messages extracted successfully!');
+    progress.complete(
+        'intl messages extracted successfully! Please check the content of zh-CN-temp.json file.');
   }
 }
