@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## 1.1.4
 
 - api_gen 生成 api_paths 优化
+- intl命令拆分
+- intl_extract优化
+- intl_translate命令添加
+- intl_merge命令添加
 
 ## 1.1.3
 
