@@ -15,7 +15,7 @@ class ApiItem {
 
 class ApiGenCommand extends Command {
   @override
-  final name = 'api_gen';
+  final name = 'apiGen';
   @override
   final description = 'Generate API code.';
 
@@ -43,7 +43,9 @@ class ApiGenCommand extends Command {
     if (scheme['type'] == 'object') {
       scheme['properties'].forEach((key, value) {
         if (value['type'] == 'array') {
-          objMap[key] = 'List<${primeTypeMap[value['items']['type']]}>';
+          String type =
+              value['items']['type'] ?? value['items']['\$ref'].split('/').last;
+          objMap[key] = 'List<${primeTypeMap[type] ?? type}>';
         } else {
           objMap[key] = primeTypeMap[value['type']];
         }
@@ -240,7 +242,7 @@ class ApiGenCommand extends Command {
       apiFile.createSync();
     }
     apiFile.writeAsStringSync(apiContent);
-    
+
     // 生成api_paths.dart
     File apiPathsFile = File('lib/api/api_paths.dart');
     if (!apiPathsFile.existsSync()) {
