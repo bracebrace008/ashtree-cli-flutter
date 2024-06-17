@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.1.5
+
+- api_gen requestScheme修复
+
 ## 1.1.4
 
 - api_gen 生成 api_paths 优化
